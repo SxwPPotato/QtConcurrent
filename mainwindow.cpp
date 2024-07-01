@@ -78,11 +78,11 @@ MainWindow::~MainWindow()
 
 void MainWindow::StartRace(void){
 
-
     if(ui->rb_qtConcur->isChecked()){
-
-        concurRace1->DoWork(&number,ui->rb_mutexOn->isChecked(),ui->sb_initNum->value());
-        concurRace2->DoWork(&number,ui->rb_mutexOn->isChecked(),ui->sb_initNum->value());
+        auto rc1 = [this] {concurRace1->DoWork(&number,ui->rb_mutexOn->isChecked(),ui->sb_initNum->value());  };
+        auto rc2 = [this] {concurRace2->DoWork(&number,ui->rb_mutexOn->isChecked(),ui->sb_initNum->value());  };
+        QFuture<void> future;
+        future = QtConcurrent::run(rc1).then(rc2);
 
     }
     else{
